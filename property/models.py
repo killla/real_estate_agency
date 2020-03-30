@@ -22,9 +22,9 @@ class Flat(models.Model):
     active = models.BooleanField("Активно-ли объявление", db_index=True)
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
 
-    new_building = models.NullBooleanField()
+    new_building = models.NullBooleanField(db_index=True)
 
-    liked_by = models.ManyToManyField(User, related_name="liked_posts")
+    liked_by = models.ManyToManyField(User, related_name="liked_posts", blank=True, verbose_name='Понравилось')
 
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
@@ -33,12 +33,12 @@ class Owner(models.Model):
     name = models.CharField('ФИО владельца', max_length=200, db_index=True)
     phone = models.CharField('Номер владельца', max_length=20)
     phone_pure = PhoneNumberField('Нормализованный номер', blank=True)
-    flats = models.ManyToManyField(Flat, related_name='owner', blank=True, verbose_name='Квартиры в собственности')
+    flats = models.ManyToManyField(Flat, related_name='owners', blank=True, verbose_name='Квартиры в собственности')
 
     def __str__(self):
         return f"{self.name}"
 
 class Claim(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Кто жаловался')
-    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, verbose_name='Квартира, на которую пожаловались')
-    text = models.CharField(max_length=20, verbose_name='Текст жалобы')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='claims', verbose_name='Кто жаловался')
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, related_name='claims', verbose_name='Квартира, на которую пожаловались')
+    text = models.TextField(verbose_name='Текст жалобы')
