@@ -39,6 +39,6 @@ class Owner(models.Model):
         return f"{self.name}"
 
 class Claim(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='claims', verbose_name='Кто жаловался')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='claims', verbose_name='Кто жаловался')
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, related_name='claims', verbose_name='Квартира, на которую пожаловались')
     text = models.TextField(verbose_name='Текст жалобы')
